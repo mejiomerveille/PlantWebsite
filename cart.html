@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panier</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white p-8">
+
+    <h2 class="text-2xl font-bold mb-4">Panier</h2>
+
+    <ul id="panier-items" class="list-disc list-inside mb-4">
+        <!-- Panier items will be added here dynamically -->
+    </ul>
+
+    <div id="panier-total" class="mb-4 font-bold">Total: 0 fcfa</div>
+
+    <button id="payer" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Payer</button>
+
+    <!-- Payment Popup -->
+    <div id="payment-popup" class="hidden fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div class="bg-white p-8 rounded shadow-lg">
+            <h3 class="text-xl font-bold mb-4">Paiement Mobile Money</h3>
+            <form id="payment-form">
+                <div class="mb-4">
+                    <label for="phone-number" class="block text-gray-700 font-bold mb-2">Numéro de Téléphone:</label>
+                    <input type="tel" id="phone-number" name="phone-number" class="border border-gray-400 p-2 w-full" required>
+                </div>
+                <div class="mb-4">
+                    <label for="amount" class="block text-gray-700 font-bold mb-2">Montant (fcfa):</label>
+                    <input type="number" id="amount" name="amount" class="border border-gray-400 p-2 w-full" readonly>
+                </div>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Soumettre</button>
+                <button type="button" id="close-popup" class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Fermer</button>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ... (previous JavaScript code)
+
+        const paymentPopup = document.getElementById('payment-popup');
+        const closePopupButton = document.getElementById('close-popup');
+        const paymentForm = document.getElementById('payment-form');
+        const amountInput = document.getElementById('amount');
+
+        document.getElementById('payer').addEventListener('click', () => {
+            paymentPopup.classList.remove('hidden');
+            amountInput.value = panier.reduce((sum, item) => sum + item.price, 0); // Set amount in the form
+        });
+
+
+        closePopupButton.addEventListener('click', () => {
+            paymentPopup.classList.add('hidden');
+        });
+
+        paymentForm.addEventListener('submit', (event) => {
+          event.preventDefault(); // Prevent form from actually submitting
+
+          const phoneNumber = document.getElementById('phone-number').value;
+          const amount = document.getElementById('amount').value;
+
+
+          // Replace this with your actual Mobile Money API call
+          // Example using fetch:
+          fetch('/your-mobile-money-api-endpoint', { // Replace with your API endpoint
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ phoneNumber, amount })
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Handle the API response (e.g., show success/error message)
+            console.log('API Response:', data);
+            alert('Paiement soumis!'); // Replace with more sophisticated handling
+            paymentPopup.classList.add('hidden'); // Close the popup after submission
+          })
+          .catch(error => {
+            console.error('API Error:', error);
+            alert('Erreur lors du paiement.');
+          });
+
+        });
+
+
+    </script>
+
+</body>
+</html>
